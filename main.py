@@ -12,7 +12,7 @@ def main():
     threading.Thread(target=getrasp.get_timetable_json).start()
     print('bot started')
 
-    TOKEN = 'TOKEN'  # raspbot
+    TOKEN = '5123679189:AAHTMxCyOUwPSbaeof31m8SjRHVs4qKZci8'  # testbot
 
     bot = telebot.TeleBot(TOKEN)
 
