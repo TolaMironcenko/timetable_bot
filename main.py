@@ -9,21 +9,20 @@ import threading
 
 
 def main():
+    threading.Thread(target=getrasp.get_timetable_json).start()
     print('bot started')
 
     TOKEN = '5187659565:AAEUlNnLdDWwYkJV0flRoeH8_thDZrNF91Q'  # raspbot
-    
+
     bot = telebot.TeleBot(TOKEN)
 
     with open('rasp.json') as json_file:
         raspdata = json.load(json_file)
 
-
     markup = types.InlineKeyboardMarkup()
     markup.row(buttons[2], buttons[3], buttons[4])
     markup.row(buttons[5], buttons[6], buttons[7])
     markup.row(buttons[8], buttons[0], buttons[1])
-
 
     @bot.callback_query_handler(func=lambda call: True)
     def answer(call):
@@ -32,7 +31,6 @@ def main():
                       get_format_week(int(call.data) if call.data.isdigit() else call.data) + '\n\n' + \
                       rasptoeveryday(get_format_week(int(call.data) if call.data.isdigit() else call.data), raspdata)
         bot.send_message(call.message.chat.id, raspmessage, reply_markup=markup)
-
 
     @bot.message_handler(commands=['start'])
     def send_welcome(message):
@@ -43,7 +41,6 @@ def main():
 
         bot.send_message(message.chat.id, finalMessage, reply_markup=markup)
 
-    threading.Thread(target=getrasp.get_timetable_json).start()
     bot.infinity_polling()
 
 

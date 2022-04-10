@@ -22,8 +22,12 @@ def getpare(day, pare, data):
             pare += a['name'] + ' '
         pare += '\n'
     for i in data['note_by_date']:
-        if day == i['date'] and i['note'] != '':
-            pare += '💻 ' + i['note'] + '\n'
+        if day == i['date']:
+            if i['note'] == 'реализуется в эиос':
+                pare += '💻 ' + i['note'] + '\n'
+            else:
+                if i['note'] != '':
+                    pare += '👯‍ ' + i['note'] + '\n'
     pare += '\n'
 
     return pare
