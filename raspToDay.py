@@ -44,5 +44,7 @@ def rasptoeveryday(day, data):
                     pares[j] = getpare(day, pares[j], i)
             pares[0] = pares[1] + pares[2] + pares[3] + \
                 pares[4] + pares[5] + pares[6] + pares[7]
-
-    return pares[0]
+    if pares[0] == '':
+        return 'ещё нет расписания на этот день'
+    else:
+        return pares[0]

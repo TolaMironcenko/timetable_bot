@@ -3,6 +3,7 @@ import requests
 import time
 from termcolor import cprint
 
+
 def get_timetable_json():
     while True:
         rasp = json.loads(requests.get('https://timetable.tusur.ru/api/v2/raspisanie_vuzov').text)
@@ -15,4 +16,3 @@ def get_timetable_json():
                       )
         cprint('OK', 'green')
         time.sleep(1800)
-

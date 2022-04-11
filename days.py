@@ -1,5 +1,6 @@
 import datetime
 
+
 def get_format_week(week_id):
     if isinstance(week_id, int):
         current_week = datetime.datetime.today().weekday()

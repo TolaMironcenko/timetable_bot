@@ -12,7 +12,7 @@ def main():
     threading.Thread(target=getrasp.get_timetable_json).start()
     print('bot started')
 
-    TOKEN = '5123679189:AAHTMxCyOUwPSbaeof31m8SjRHVs4qKZci8'  # testbot
+    TOKEN = 'TOKEN'  # testbot
 
     bot = telebot.TeleBot(TOKEN)
 
@@ -32,14 +32,20 @@ def main():
                       rasptoeveryday(get_format_week(int(call.data) if call.data.isdigit() else call.data), raspdata)
         bot.send_message(call.message.chat.id, raspmessage, reply_markup=markup)
 
-    @bot.message_handler(commands=['start'])
+    @bot.message_handler(commands=['start', 'date'])
     def send_welcome(message):
-        finalMessage = 'Привет это бот расписания ТУСУР факультета систем управления группы 430-3\n\n' \
-                       'Расписание на сегодня: ' + get_format_week('today') + '\n\n'
+        if message.text.split(' ')[0] == '/start':
+            finalMessage = 'Привет это бот расписания ТУСУР факультета систем управления группы 430-3\n\n' \
+                           'Расписание на сегодня: ' + get_format_week('today') + '\n\n'
 
-        finalMessage += rasptoeveryday(get_format_week('today'), raspdata)
+            finalMessage += rasptoeveryday(get_format_week('today'), raspdata)
 
-        bot.send_message(message.chat.id, finalMessage, reply_markup=markup)
+            bot.send_message(message.chat.id, finalMessage, reply_markup=markup)
+
+        if message.text.split(' ')[0] == '/date':
+            finalMessage = 'Расписание на: ' + message.text.split(' ')[1] + '\n\n'
+            finalMessage += rasptoeveryday(message.text.split(' ')[1], raspdata)
+            bot.send_message(message.chat.id, finalMessage, reply_markup=markup)
 
     bot.infinity_polling()
 
