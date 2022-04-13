@@ -1,7 +1,7 @@
 from number_of_pare import number_of_pare
 
 
-def getpare(day, pare, data):
+def get_pare(day, pare, data):
     pare += number_of_pare(data['time']['start'])[1] + ' ' + \
            data['subject'] + '\n'
     if data['type'] == 'Лекция':
@@ -33,7 +33,7 @@ def getpare(day, pare, data):
     return pare
 
 
-def rasptoeveryday(day, data):
+def rasp_to_every_day(day, data):
 
     pares = ['', '', '', '', '', '', '', '']
 
@@ -41,10 +41,10 @@ def rasptoeveryday(day, data):
         if i['date'].find(day) != -1:
             for j in range(1, 8):
                 if number_of_pare(i['time']['start'])[0] == str(j):
-                    pares[j] = getpare(day, pares[j], i)
+                    pares[j] = get_pare(day, pares[j], i)
             pares[0] = pares[1] + pares[2] + pares[3] + \
                 pares[4] + pares[5] + pares[6] + pares[7]
     if pares[0] == '':
-        return 'ещё нет расписания на этот день'
+        return 'Eщё нет расписания на этот день'
     else:
         return pares[0]

@@ -1,54 +1,1 @@
-import telebot
-from telebot import types
-import json
-from buttons import buttons
-from days import get_format_week
-from raspToDay import rasptoeveryday
-import getrasp
-import threading
-
-
-def main():
-    threading.Thread(target=getrasp.get_timetable_json).start()
-    print('bot started')
-
-    TOKEN = 'TOKEN'  # testbot
-
-    bot = telebot.TeleBot(TOKEN)
-
-    with open('rasp.json') as json_file:
-        raspdata = json.load(json_file)
-
-    markup = types.InlineKeyboardMarkup()
-    markup.row(buttons[2], buttons[3], buttons[4])
-    markup.row(buttons[5], buttons[6], buttons[7])
-    markup.row(buttons[8], buttons[0], buttons[1])
-
-    @bot.callback_query_handler(func=lambda call: True)
-    def answer(call):
-        print(call.data)
-        raspmessage = 'Расписание на: ' + \
-                      get_format_week(int(call.data) if call.data.isdigit() else call.data) + '\n\n' + \
-                      rasptoeveryday(get_format_week(int(call.data) if call.data.isdigit() else call.data), raspdata)
-        bot.send_message(call.message.chat.id, raspmessage, reply_markup=markup)
-
-    @bot.message_handler(commands=['start', 'date'])
-    def send_welcome(message):
-        if message.text.split(' ')[0] == '/start':
-            finalMessage = 'Привет это бот расписания ТУСУР факультета систем управления группы 430-3\n\n' \
-                           'Расписание на сегодня: ' + get_format_week('today') + '\n\n'
-
-            finalMessage += rasptoeveryday(get_format_week('today'), raspdata)
-
-            bot.send_message(message.chat.id, finalMessage, reply_markup=markup)
-
-        if message.text.split(' ')[0] == '/date':
-            finalMessage = 'Расписание на: ' + message.text.split(' ')[1] + '\n\n'
-            finalMessage += rasptoeveryday(message.text.split(' ')[1], raspdata)
-            bot.send_message(message.chat.id, finalMessage, reply_markup=markup)
-
-    bot.infinity_polling()
-
-
-if __name__ == "__main__":
-    main()
+import jsonfrom days import get_format_weekfrom raspToDay import rasp_to_every_day, get_pareimport getraspfrom multiprocessing import Processimport datetimeimport timefrom bot import botfrom get_chat_id import get_chat_idfrom termcolor import cprintwith open('users.json', 'r') as get_chat_ids:    chat_ids = json.load(get_chat_ids)print('bot started')def notifications():    while True:        pare = ''        for i in bot.raspdata:            if i['date'].find(get_format_week('today')) != -1:                start = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d') + ' ' +                                                   i['time']['start'], '%Y-%m-%d %H:%M')                now = datetime.datetime.strptime(datetime.datetime.now().strftime('%Y-%m-%d %H:%M') + ':00',                                                 '%Y-%m-%d %H:%M:%S')                delt20 = now + datetime.timedelta(minutes=20)                delt = start == delt20                if delt:                    pare = 'Через 20 минут начнется пара:\n\n' + get_pare(get_format_week('today'), pare, i)                    with open('users.json') as users:                        users_data = json.load(users)                    for j in users_data:                        bot.bot.send_message(j['chat_id'], pare)                    pare = ''                    cprint('ok', 'green')        cprint('no', 'yellow')        time.sleep(60)def main():    Process(target=getrasp.get_timetable_json).start()    Process(target=notifications).start()    @bot.bot.callback_query_handler(func=lambda call: True)    def answer(call):        print(call.data)        raspmessage = 'Расписание на: ' + \                      get_format_week(int(call.data) if call.data.isdigit() else call.data) + '\n\n' + \                      rasp_to_every_day(get_format_week(int(call.data) if call.data.isdigit() else call.data),                                        bot.raspdata)        bot.bot.send_message(call.message.chat.id, raspmessage, reply_markup=bot.markup)    @bot.bot.message_handler(commands=['start', 'date'])    def send_welcome(message):        if message.text.split(' ')[0] == '/start':            final_message = 'Привет это бот расписания ТУСУР факультета систем управления группы 430-3\n\n' \                            'Расписание на сегодня: ' + get_format_week('today') + '\n\n'            final_message += rasp_to_every_day(get_format_week('today'), bot.raspdata)            bot.bot.send_message(message.chat.id, final_message, reply_markup=bot.markup)        if message.text.split(' ')[0] == '/date':            final_message = 'Расписание на: ' + message.text.split(' ')[1] + '\n\n'            final_message += rasp_to_every_day(message.text.split(' ')[1], bot.raspdata)            bot.bot.send_message(message.chat.id, final_message, reply_markup=bot.markup)        get_chat_id.get_id(message, chat_ids)    # bot.bot.infinity_polling(timeout=10, long_polling_timeout=5)    while True:        try:            bot.bot.polling(none_stop=True)        except Exception as e:            time.sleep(3)            cprint(str(e), 'red')if __name__ == "__main__":    Process(target=main()).start()
