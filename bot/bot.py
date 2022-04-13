@@ -3,7 +3,7 @@ from telebot import types
 from buttons import buttons
 import json
 
-token = '5123679189:AAHTMxCyOUwPSbaeof31m8SjRHVs4qKZci8'  # testbot
+token = 'token'  # testbot
 
 bot = telebot.TeleBot(token)
 
