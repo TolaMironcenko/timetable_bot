@@ -3,12 +3,16 @@ from telebot import types
 from buttons import buttons
 import json
 
-token = 'token'  # testbot
+token = '5123679189:AAHTMxCyOUwPSbaeof31m8SjRHVs4qKZci8'  # testbot
 
 bot = telebot.TeleBot(token)
 
-with open('rasp.json') as json_file:
-    raspdata = json.load(json_file)
+
+def get_file():
+    with open('rasp.json') as json_file:
+        raspdata = json.load(json_file)
+        return raspdata
+
 
 markup = types.InlineKeyboardMarkup()
 markup.row(buttons[2], buttons[3], buttons[4])
