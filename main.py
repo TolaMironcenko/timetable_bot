@@ -82,4 +82,4 @@ def main():
 
 
 if __name__ == "__main__":
-    Process(target=main()).start()
+    threading.Thread(target=main()).start()
