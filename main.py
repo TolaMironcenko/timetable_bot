@@ -71,15 +71,44 @@ def main():
 
         get_chat_id.get_id(message, get_chats_ids())
 
-    while True:
-        try:
-            threading.Thread(target=getrasp.get_timetable_json).start()
-            threading.Thread(target=notifications).start()
-            bot.bot.polling(none_stop=True)
-        except Exception as e:
-            time.sleep(3)
-            cprint(str(e), 'red')
+    threads_arr = []
+    try:
+        get_timetable_from_server = threading.Thread(target=getrasp.get_timetable_json)
+        threads_arr.append(get_timetable_from_server)
+        get_timetable_from_server.daemon = True
+        get_timetable_from_server.start()
+    except KeyboardInterrupt as ki:
+        exit("byby")
+    except Exception as e:
+        cprint(str(e), 'red')
+        get_timetable_from_server = threading.Thread(target=getrasp.get_timetable_json)
+        threads_arr.append(get_timetable_from_server)
+        get_timetable_from_server.daemon = True
+        get_timetable_from_server.start()
+    try:
+        notif = threading.Thread(target=notifications)
+        threads_arr.append(notif)
+        notif.daemon = True
+        notif.start()
+    except KeyboardInterrupt as ki:
+        exit("byby")
+    except Exception as e:
+        cprint(str(e), 'red')
+        threading.Thread(target=notifications).start()
+    try:
+        bot.bot.polling(none_stop=True)
+    except KeyboardInterrupt as ki:
+        exit('byby')
+    except Exception as e:
+        cprint(str(e), 'red')
+        bot.bot.polling(none_stop=True)
 
 
 if __name__ == "__main__":
-    threading.Thread(target=main()).start()
+    try:
+        main()
+        # threading.Thread(target=main()).start()
+    except KeyboardInterrupt as ki:
+        exit('byby')
+    except Exception as e:
+        cprint(str(e), 'red')
